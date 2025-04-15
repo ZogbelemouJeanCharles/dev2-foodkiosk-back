@@ -1,159 +1,49 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Fast-food Beheersysteem</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-dark text-light">
-
-<nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
-  <div class="container">
-    <a class="navbar-brand" href="#">FastFood Manager</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarContent">
-      <ul class="navbar-nav me-auto">
-        <li class="nav-item">
-          <a class="nav-link active" href="#">Menu</a>
-          
-        </li>
-      </ul>
-      <div class="d-flex gap-2">
-        <button class="btn btn-light" data-bs-toggle="modal" data-bs-target="#loginModal">
-          Sign In
-        </button>
-        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#menuModal">
-          + Nieuw Item
-        </button>
-      </div>
-      
-      
-    </div>
-  </div>
-</nav>
-
-<div class="container mt-4">
-  <h1 class="text-center mb-4">Menu Beheer</h1>
-  
-
-  <!-- Voorbeeldtabel -->
-  <table class="table table-dark table-striped">
-    <thead class="table-secondary text-dark">
-      <tr>
-        <th>ID</th>
-        <th>Naam</th>
-        <th>Categorie</th>
-        <th>Prijs</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>1</td>
-        <td>Hamburger</td>
-        <td>Gerecht</td>
-        <td>€5.99</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
-<!-- Modal met formulier -->
-<div class="modal fade" id="menuModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content bg-dark text-light">
-      <div class="modal-header">
-        <h5 class="modal-title" id="modalTitle">Nieuw Menu Item</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form id="itemForm" method="POST" action="/menu">
-          <input type="hidden" id="itemId" name="id" value="">
-
-          <div class="mb-3">
-            <label for="itemName" class="form-label">Naam *</label>
-            <input type="text" class="form-control" id="itemName" name="name" required pattern=".{3,}" placeholder="Minimaal 3 tekens">
-          </div>
-
-          <div class="mb-3">
-            <label for="itemCategory" class="form-label">Categorie *</label>
-            <select class="form-select" id="itemCategory" name="category" required>
-              <option value="">Selecteer...</option>
-              <option value="gerechten">Gerecht</option>
-              <option value="dranken">Drank</option>
-              <option value="desserts">Dessert</option>
-            </select>
-          </div>
-
-          <div class="mb-3">
-            <label for="itemPrice" class="form-label">Prijs (€) *</label>
-            <input type="number" class="form-control" id="itemPrice" name="price" min="0.01" step="0.01" required placeholder="0.00">
-          </div>
-
-          <div class="mb-3">
-            <label for="itemDesc" class="form-label">Beschrijving</label>
-            <textarea class="form-control" id="itemDesc" name="description" rows="2"></textarea>
-          </div>
-
-          <div class="mb-3">
-            <label for="itemDate" class="form-label">Beschikbaar vanaf</label>
-            <input type="datetime-local" class="form-control" id="itemDate" name="available_date">
-          </div>
-
-          <div class="mb-3">
-            <label for="itemExtras" class="form-label">Extra opties</label>
-            <select multiple class="form-select" id="itemExtras" name="extras[]">
-              <option value="kaas">Kaas</option>
-              <option value="spek">Spek</option>
-              <option value="ui">Ui</option>
-              <option value="saus">Extra saus</option>
-            </select>
-          </div>
-
-          <div class="form-check mb-3">
-            <input class="form-check-input" type="checkbox" id="itemAvailable" name="available">
-            <label class="form-check-label" for="itemAvailable">
-              Beschikbaar
-            </label>
-          </div>
-
-          <div class="modal-footer px-0">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuleren</button>
-            <button type="submit" class="btn btn-primary">Opslaan</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Sign In Modal -->
+<!-- Sign In/Sign Up Modal -->
 <div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content bg-dark text-light">
         <div class="modal-header">
-          <h5 class="modal-title">Aanmelden</h5>
+          <h5 class="modal-title" id="authTitle">Aanmelden</h5>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <form id="loginForm" method="POST" action="/login">
-            <div class="mb-3">
-              <label for="loginName" class="form-label">Naam</label>
-              <input type="text" class="form-control" id="loginName" name="name" placeholder="Bijv. Jan Jansen" required>
+          <!-- Gecombineerd formulier -->
+          <form id="loginForm" method="POST" action="/auth">
+            <!-- Inlogvelden -->
+            <div id="loginFields">
+              <div class="mb-3">
+                <label for="loginName" class="form-label">Naam</label>
+                <input type="text" class="form-control" id="loginName" name="name" placeholder="Bijv. Jan Jansen" required>
+              </div>
+              <div class="mb-3">
+                <label for="loginEmail" class="form-label">E-mail</label>
+                <input type="email" class="form-control" id="loginEmail" name="email" placeholder="naam@voorbeeld.com" required>
+              </div>
+              <div class="mb-3">
+                <label for="loginPassword" class="form-label">Wachtwoord</label>
+                <input type="password" class="form-control" id="loginPassword" name="password" placeholder="Voer je wachtwoord in" required>
+              </div>
             </div>
-            <div class="mb-3">
-              <label for="loginEmail" class="form-label">E-mail</label>
-              <input type="email" class="form-control" id="loginEmail" name="email" placeholder="naam@voorbeeld.com" required>
+  
+            <!-- Registratievelden -->
+            <div id="signupFields" style="display: none;">
+              <div class="mb-3">
+                <label for="signupName" class="form-label">Naam</label>
+                <input type="text" class="form-control" id="signupName" name="signup_name" placeholder="Bijv. Sarah Bakker">
+              </div>
+              <div class="mb-3">
+                <label for="signupEmail" class="form-label">E-mail</label>
+                <input type="email" class="form-control" id="signupEmail" name="signup_email" placeholder="naam@voorbeeld.com">
+              </div>
+              <div class="mb-3">
+                <label for="signupPassword" class="form-label">Wachtwoord</label>
+                <input type="password" class="form-control" id="signupPassword" name="signup_password" placeholder="Maak een wachtwoord aan">
+              </div>
             </div>
-            <div class="mb-3">
-              <label for="loginPassword" class="form-label">Wachtwoord</label>
-              <input type="password" class="form-control" id="loginPassword" name="password" placeholder="Voer je wachtwoord in" required>
-            </div>
-            <div class="modal-footer px-0">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuleren</button>
-              <button type="submit" class="btn btn-primary">Aanmelden</button>
+  
+            <div class="modal-footer flex-column align-items-stretch">
+              <button type="submit" class="btn btn-primary w-100 mb-2" id="authButton">Aanmelden</button>
+              <button type="button" class="btn btn-link text-light" id="toggleAuth">Nog geen account? Registreer hier.</button>
             </div>
           </form>
         </div>
@@ -161,7 +51,3 @@
     </div>
   </div>
   
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
