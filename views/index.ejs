@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="nl">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,6 +8,7 @@
 </head>
 <body class="bg-dark text-light">
 
+<!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
   <div class="container">
     <a class="navbar-brand" href="#">FastFood Manager</a>
@@ -18,7 +19,6 @@
       <ul class="navbar-nav me-auto">
         <li class="nav-item">
           <a class="nav-link active" href="#">Menu</a>
-          
         </li>
       </ul>
       <div class="d-flex gap-2">
@@ -29,20 +29,17 @@
           + Nieuw Item
         </button>
       </div>
-      
-      
     </div>
   </div>
 </nav>
 
+<!-- Hoofdinformatie -->
 <div class="container mt-4">
   <h1 class="text-center mb-4">Menu Beheer</h1>
   
   <div class="mb-4">
     <input type="text" class="form-control" placeholder="Zoek menu-items...">
   </div>
-  
-  
 
   <!-- Voorbeeldtabel -->
   <table class="table table-dark table-striped">
@@ -65,89 +62,122 @@
   </table>
 </div>
 
-<!-- Modal met formulier -->
-<!-- Sign In/Sign Up Modal -->
+<!-- Sign In / Sign Up Modal -->
 <div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content bg-dark text-light">
-        <div class="modal-header">
-          <h5 class="modal-title" id="authTitle">Aanmelden</h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <!-- Gecombineerd formulier -->
-          <form id="loginForm" method="POST" action="/auth">
-            <!-- Inlogvelden -->
-            <div id="loginFields">
-              <div class="mb-3">
-                <label for="loginName" class="form-label">Naam</label>
-                <input type="text" class="form-control" id="loginName" name="name" placeholder="Bijv. Jan Jansen" required>
-              </div>
-              <div class="mb-3">
-                <label for="loginEmail" class="form-label">E-mail</label>
-                <input type="email" class="form-control" id="loginEmail" name="email" placeholder="naam@voorbeeld.com" required>
-              </div>
-              <div class="mb-3">
-                <label for="loginPassword" class="form-label">Wachtwoord</label>
-                <input type="password" class="form-control" id="loginPassword" name="password" placeholder="Voer je wachtwoord in" required>
-              </div>
+  <div class="modal-dialog">
+    <div class="modal-content bg-dark text-light">
+      <div class="modal-header">
+        <h5 class="modal-title" id="authTitle">Aanmelden</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Formulier -->
+        <form id="authForm">
+          <!-- Login velden -->
+          <div id="loginFields">
+            <div class="mb-3">
+              <label for="loginName" class="form-label">Naam</label>
+              <input type="text" class="form-control" id="loginName" name="name" placeholder="Bijv. Jan Jansen" required>
             </div>
-  
-            <!-- Registratievelden -->
-            <div id="signupFields" style="display: none;">
-              <div class="mb-3">
-                <label for="signupName" class="form-label">Naam</label>
-                <input type="text" class="form-control" id="signupName" name="signup_name" placeholder="Bijv. Sarah Bakker">
-              </div>
-              <div class="mb-3">
-                <label for="signupEmail" class="form-label">E-mail</label>
-                <input type="email" class="form-control" id="signupEmail" name="signup_email" placeholder="naam@voorbeeld.com">
-              </div>
-              <div class="mb-3">
-                <label for="signupPassword" class="form-label">Wachtwoord</label>
-                <input type="password" class="form-control" id="signupPassword" name="signup_password" placeholder="Maak een wachtwoord aan">
-              </div>
+            <div class="mb-3">
+              <label for="loginEmail" class="form-label">E-mail</label>
+              <input type="email" class="form-control" id="loginEmail" name="email" placeholder="naam@voorbeeld.com" required>
             </div>
-  
-            <div class="modal-footer flex-column align-items-stretch">
-              <button type="submit" class="btn btn-primary w-100 mb-2" id="authButton">Aanmelden</button>
-              <button type="button" class="btn btn-link text-light" id="toggleAuth">Nog geen account? Registreer hier.</button>
+            <div class="mb-3">
+              <label for="loginPassword" class="form-label">Wachtwoord</label>
+              <input type="password" class="form-control" id="loginPassword" name="password" placeholder="Voer je wachtwoord in" required>
             </div>
-          </form>
-        </div>
+          </div>
+
+          <!-- Signup velden -->
+          <div id="signupFields" style="display: none;">
+            <div class="mb-3">
+              <label for="signupName" class="form-label">Naam</label>
+              <input type="text" class="form-control" id="signupName" name="signup_name" placeholder="Bijv. Sarah Bakker">
+            </div>
+            <div class="mb-3">
+              <label for="signupEmail" class="form-label">E-mail</label>
+              <input type="email" class="form-control" id="signupEmail" name="signup_email" placeholder="naam@voorbeeld.com">
+            </div>
+            <div class="mb-3">
+              <label for="signupPassword" class="form-label">Wachtwoord</label>
+              <input type="password" class="form-control" id="signupPassword" name="signup_password" placeholder="Maak een wachtwoord aan">
+            </div>
+          </div>
+
+          <div class="modal-footer flex-column align-items-stretch">
+            <button type="submit" class="btn btn-primary w-100 mb-2" id="authButton">Aanmelden</button>
+            <button type="button" class="btn btn-link text-light" id="toggleAuth">Nog geen account? Registreer hier.</button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
-  
-  
-  <script>
-    const toggleBtn = document.getElementById('toggleAuth');
-    const authTitle = document.getElementById('authTitle');
-    const loginFields = document.getElementById('loginFields');
-    const signupFields = document.getElementById('signupFields');
-    const authButton = document.getElementById('authButton');
-  
-    let isLogin = true;
-  
-    toggleBtn.addEventListener('click', () => {
-      isLogin = !isLogin;
-  
-      if (isLogin) {
-        authTitle.textContent = 'Aanmelden';
-        loginFields.style.display = 'block';
-        signupFields.style.display = 'none';
-        authButton.textContent = 'Aanmelden';
-        toggleBtn.textContent = 'Nog geen account? Registreer hier.';
-      } else {
-        authTitle.textContent = 'Registreren';
-        loginFields.style.display = 'none';
-        signupFields.style.display = 'block';
-        authButton.textContent = 'Registreren';
-        toggleBtn.textContent = 'Heb je al een account? Log hier in.';
-      }
-    });
-  </script>
-  
+</div>
+
+<!-- Nieuw Item Modal -->
+<div class="modal fade" id="menuModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content bg-dark text-light">
+      <div class="modal-header">
+        <h5 class="modal-title">Nieuw Menu Item</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Formulier voor nieuw menu item -->
+        <form id="itemForm">
+          <div class="mb-3">
+            <label for="itemName" class="form-label">Naam</label>
+            <input type="text" class="form-control" id="itemName" placeholder="Bijv. Friet" required>
+          </div>
+          <div class="mb-3">
+            <label for="itemCategory" class="form-label">Categorie</label>
+            <select class="form-select" id="itemCategory" required>
+              <option value="Gerecht">Gerecht</option>
+              <option value="Drank">Drank</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="itemPrice" class="form-label">Prijs (€)</label>
+            <input type="number" class="form-control" id="itemPrice" placeholder="Prijs" required>
+          </div>
+          <button type="submit" class="btn btn-primary w-100">Opslaan</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  // Wisselen tussen login en signup (dit is via ai !) //
+  const toggleBtn = document.getElementById('toggleAuth');
+  const authTitle = document.getElementById('authTitle');
+  const loginFields = document.getElementById('loginFields');
+  const signupFields = document.getElementById('signupFields');
+  const authButton = document.getElementById('authButton');
+  
+  let isLogin = true;
+  
+  toggleBtn.addEventListener('click', () => {
+    isLogin = !isLogin;
+  
+    if (isLogin) {
+      authTitle.textContent = 'Aanmelden';
+      loginFields.style.display = 'block';
+      signupFields.style.display = 'none';
+      authButton.textContent = 'Aanmelden';
+      toggleBtn.textContent = 'Nog geen account? Registreer hier.';
+    } else {
+      authTitle.textContent = 'Registreren';
+      loginFields.style.display = 'none';
+      signupFields.style.display = 'block';
+      authButton.textContent = 'Registreren';
+      toggleBtn.textContent = 'Heb je al een account? Log hier in.';
+    }
+  });
+</script>
+
 </body>
 </html>
