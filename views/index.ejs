@@ -170,6 +170,16 @@
                             <label for="itemDate" class="form-label">Datum & Tijd beschikbaar</label>
                             <input type="datetime-local" class="form-control" id="itemDate" name="available_date">
                           </div>
+
+                        <div class="mb-3">
+                            <label for="itemOptions" class="form-label">Kies extra's</label>
+                            <select class="form-select" id="itemOptions" name="extras[]" multiple>
+                              <option value="kaas">Kaas</option>
+                              <option value="spek">Spek</option>
+                              <option value="ui">Ui</option>
+                              <option value="saus">Extra saus</option>
+                            </select>
+                        </div>
                           
                         
                     </form>
