@@ -153,6 +153,17 @@
                             <input class="form-check-input" type="checkbox" id="itemAvailable" name="available">
                             <label class="form-check-label" for="itemAvailable">Beschikbaar</label>
                         </div>
+                        
+                        <div class="mb-3">
+                            <label for="itemName" class="form-label">Naam *</label>
+                            <input type="text" class="form-control" id="itemName" name="name" required pattern=".{3,}" placeholder="Minimaal 3 tekens">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="itemPrice" class="form-label">Prijs (€) *</label>
+                            <input type="number" class="form-control" id="itemPrice" name="price" min="0.01" step="0.01" required>
+                        </div>
+                        
                     </form>
                     
                 </div>
