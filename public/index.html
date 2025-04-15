@@ -151,7 +151,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-  // Wisselen tussen login en signup (dit is via ai !) //
+  // Wisselen tussen login en signup
   const toggleBtn = document.getElementById('toggleAuth');
   const authTitle = document.getElementById('authTitle');
   const loginFields = document.getElementById('loginFields');
@@ -178,6 +178,33 @@
     }
   });
 </script>
+
+<script>
+  document.getElementById('itemForm').addEventListener('submit', function(e) {
+    e.preventDefault(); // Voorkom standaard formulierverzending
+
+    const name = document.getElementById('itemName').value;
+    const category = document.getElementById('itemCategory').value;
+    const price = document.getElementById('itemPrice').value;
+
+    // POST-aanroep naar de server
+    fetch('/menu', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ name, category, price })
+    })
+    .then(response => response.text())
+    .then(data => {
+      alert(data); // Toon het antwoord van de server
+    })
+    .catch(error => {
+      console.error('Er is een fout opgetreden:', error);
+    });
+  });
+</script>
+
 
 </body>
 </html>
