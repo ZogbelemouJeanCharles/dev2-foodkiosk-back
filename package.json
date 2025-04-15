@@ -1,0 +1,25 @@
+{
+  "name": "dev2-foodkiosk-back",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ZogbelemouJeanCharles/dev2-foodkiosk-back.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ZogbelemouJeanCharles/dev2-foodkiosk-back/issues"
+  },
+  "homepage": "https://github.com/ZogbelemouJeanCharles/dev2-foodkiosk-back#readme",
+  "description": "",
+  "dependencies": {
+    "body-parser": "^2.2.0",
+    "ejs": "^3.1.10",
+    "express": "^5.1.0"
+  }
+}
