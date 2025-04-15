@@ -3,142 +3,199 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Fast-food List</title>
+    <title>Fast-food Beheersysteem</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Extra stijl voor betere UX */
+        .nav-link.active { font-weight: bold; }
+        .table { margin-bottom: 20px; }
+        .btn-sm { margin-right: 5px; }
+    </style>
 </head>
 <body class="bg-dark text-light">
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
         <div class="container">
-            <a class="navbar-brand" href="#">Fast-food</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
+            <a class="navbar-brand" href="#">FastFood Manager</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <div class="collapse navbar-collapse" id="navbarContent">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Gerechten</a>
+                        <a class="nav-link active" href="#">Menu</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Dranken</a>
+                        <a class="nav-link" href="#">Bestellingen</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Contact</a>
+                        <a class="nav-link" href="#">Instellingen</a>
                     </li>
                 </ul>
+                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#menuModal">
+                    + Nieuw Item
+                </button>
             </div>
         </div>
     </nav>
 
-
     <div class="container mt-4">
-        <h1 class="text-center">Fast-food Menu</h1>
-
-        <div class="collapse navbar-collapse flex-grow-0" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-3 mb-lg-0">
-                <li class="nav-item">
-                    <a class="navlink" href="#">Gerechten</a>
-                </li>
-            </ul>
-    
-    
-        </div>
+        <h1 class="text-center mb-4">Menu Beheer</h1>
 
         <div class="d-flex justify-content-between mb-3">
-            <button class="btn btn-warning">Edit</button>
+            <div class="btn-group">
+                <button class="btn btn-outline-light active">Alles</button>
+                <button class="btn btn-outline-light">Gerechten</button>
+                <button class="btn btn-outline-light">Dranken</button>
+            </div>
+            <div>
+                <input type="text" class="form-control" placeholder="Zoek...">
+            </div>
         </div>
 
-        <table class="table table-dark table-striped">
-            <thead>
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">Gerechten</th>
-                <th scope="col">Drank</th>
-                <th scope="col">Actions</th>
-              </tr>
+        <table class="table table-dark table-striped table-hover">
+            <thead class="table-secondary">
+                <tr>
+                    <th width="5%">ID</th>
+                    <th>Naam</th>
+                    <th>Categorie</th>
+                    <th>Prijs</th>
+                    <th width="15%">Acties</th>
+                </tr>
             </thead>
             <tbody>
-              <tr>
-                <th scope="row">1</th>
-                <td>Hamburger</td>
-                <td>Coca-Cola</td>
-                <td><button type="button" class="btn btn-primary btn-sm">Edit</button></td>
-              </tr>
-              <tr>
-                <th scope="row">2</th> 
-                <td>Pizza</td>
-                <td>Fanta</td>
-                <td><button type="button" class="btn btn-primary btn-sm">Edit</button></td>
-              </tr>
-              <tr>
-                <th scope="row">3</th>
-                <td>Frites</td>
-                <td>Ice Tea</td>
-                <td><button type="button" class="btn btn-primary btn-sm">Edit</button></td>
-              </tr>
+                <tr>
+                    <th>1</th>
+                    <td>Hamburger</td>
+                    <td><span class="badge bg-primary">Gerecht</span></td>
+                    <td>€5.99</td>
+                    <td>
+                        <button class="btn btn-primary btn-sm edit-btn">Bewerk</button>
+                        <button class="btn btn-danger btn-sm">Verwijder</button>
+                    </td>
+                </tr>
+                <tr>
+                    <th>2</th>
+                    <td>Pizza</td>
+                    <td><span class="badge bg-primary">Gerecht</span></td>
+                    <td>€8.50</td>
+                    <td>
+                        <button class="btn btn-primary btn-sm edit-btn">Bewerk</button>
+                        <button class="btn btn-danger btn-sm">Verwijder</button>
+                    </td>
+                </tr>
+                <tr>
+                    <th>3</th>
+                    <td>Cola</td>
+                    <td><span class="badge bg-success">Drank</span></td>
+                    <td>€2.50</td>
+                    <td>
+                        <button class="btn btn-primary btn-sm edit-btn">Bewerk</button>
+                        <button class="btn btn-danger btn-sm">Verwijder</button>
+                    </td>
+                </tr>
             </tbody>
         </table>
 
-        <!-- Pagina -->
-        <nav aria-label="pagina">
+        <nav aria-label="Page navigation">
             <ul class="pagination justify-content-center">
-              <li class="page-item disabled"><a class="page-link" href="#">«</a></li>
-              <li class="page-item active"><a class="page-link" href="#">1</a></li>
-              <li class="page-item"><a class="page-link" href="#">2</a></li>
-              <li class="page-item"><a class="page-link" href="#">3</a></li>
-              <li class="page-item"><a class="page-link" href="#">»</a></li>
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1">Vorige</a>
+                </li>
+                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item">
+                    <a class="page-link" href="#">Volgende</a>
+                </li>
             </ul>
         </nav>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
-         document.querySelectorAll('.btn-primary').forEach(button => {
-        button.addEventListener('click', () => {
-            const modal = new bootstrap.Modal(document.getElementById('menuModal'));
-            modal.show();
-        });
-    });
-    </script>
-
-    <!-- Einde van je huidige HTML (net boven </body>) -->
-</nav>
-
-<!-- Modal voor toevoegen/bewerken -->
-<div class="modal fade" id="menuModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content bg-dark text-light">
-            <div class="modal-header">
-                <h5 class="modal-title">Menu-item toevoegen</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <form id="menuForm">
-                    <div class="mb-3">
-                        <label for="itemName" class="form-label">Naam gerecht/drank</label>
-                        <input type="text" class="form-control" id="itemName" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="itemPrice" class="form-label">Prijs (€)</label>
-                        <input type="number" class="form-control" id="itemPrice" min="0" step="0.01" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="itemCategory" class="form-label">Categorie</label>
-                        <select class="form-select" id="itemCategory" required>
-                            <option value="gerechten">Gerechten</option>
-                            <option value="dranken">Dranken</option>
-                        </select>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuleren</button>
-                <button type="submit" form="menuForm" class="btn btn-primary">Opslaan</button>
+    
+    <div class="modal fade" id="menuModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content bg-dark">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">Nieuw Menu Item</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="itemForm">
+                        <input type="hidden" id="itemId">
+                        <div class="mb-3">
+                            <label for="itemName" class="form-label">Naam *</label>
+                            <input type="text" class="form-control" id="itemName" required 
+                                   placeholder="Bijv. Cheeseburger">
+                        </div>
+                        <div class="mb-3">
+                            <label for="itemCategory" class="form-label">Categorie *</label>
+                            <select class="form-select" id="itemCategory" required>
+                                <option value="">Selecteer...</option>
+                                <option value="gerechten">Gerecht</option>
+                                <option value="dranken">Drank</option>
+                                <option value="desserts">Dessert</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="itemPrice" class="form-label">Prijs (€) *</label>
+                            <input type="number" class="form-control" id="itemPrice" 
+                                   min="0" step="0.01" required placeholder="0.00">
+                        </div>
+                        <div class="mb-3">
+                            <label for="itemDesc" class="form-label">Beschrijving</label>
+                            <textarea class="form-control" id="itemDesc" rows="2"></textarea>
+                        </div>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="itemAvailable">
+                            <label class="form-check-label" for="itemAvailable">
+                                Beschikbaar
+                            </label>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuleren</button>
+                    <button type="submit" form="itemForm" class="btn btn-primary">Opslaan</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        
+        const menuModal = new bootstrap.Modal(document.getElementById('menuModal'));
+        const modalTitle = document.getElementById('modalTitle');
+        const itemForm = document.getElementById('itemForm');
+        
+        
+        document.querySelectorAll('.edit-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                modalTitle.textContent = "Item Bewerken";
+               
+                document.getElementById('itemId').value = btn.closest('tr').querySelector('th').textContent;
+                document.getElementById('itemName').value = btn.closest('tr').querySelector('td:nth-child(2)').textContent;
+                menuModal.show();
+            });
+        });
+        
+        
+        itemForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('Item opgeslagen! (Dit zou naar een server gaan)');
+            menuModal.hide();
+            itemForm.reset();
+        });
+        
+        
+        document.querySelectorAll('.btn-danger').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (confirm('Weet je zeker dat je dit item wilt verwijderen?')) {
+                    btn.closest('tr').remove();
+                }
+            });
+        });
+    </script>
 </body>
 </html>
