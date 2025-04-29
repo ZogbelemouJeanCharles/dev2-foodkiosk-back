@@ -1,3 +1,18 @@
+const sqlite3 = require('sqlite3').verbose();
+const db = new sqlite3.Database('./fastfood.db');
+
+// Tabel producten aanmaken als hij nog niet bestaat
+db.serialize(() => {
+  db.run(`CREATE TABLE IF NOT EXISTS producten (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    naam TEXT NOT NULL,
+    categorie TEXT NOT NULL,
+    prijs REAL NOT NULL,
+    datum TEXT
+  )`);
+});
+
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
