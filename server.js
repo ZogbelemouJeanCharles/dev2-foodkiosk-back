@@ -12,7 +12,6 @@ db.serialize(() => {
   )`);
 });
 
-
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
@@ -28,16 +27,31 @@ app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-// Root route - render een EJS view
+// Root route - haalt producten uit database en render EJS view
 app.get('/', (req, res) => {
-  res.render('index'); // views/index.ejs
+  db.all('SELECT * FROM producten', [], (err, rows) => {
+    if (err) {
+      console.error(err.message);
+      res.status(500).send('Database fout');
+    } else {
+      res.render('index', { producten: rows });
+    }
+  });
 });
 
 // POST route voor nieuw menu-item
 app.post('/menu', (req, res) => {
-  const { name, category, price } = req.body;
-  console.log(`Nieuw item ontvangen: ${name}, Categorie: ${category}, Prijs: €${price}`);
-  res.send('Menu-item succesvol ontvangen!');
+  const { name, category, price, available_date } = req.body;
+  db.run(`INSERT INTO producten (naam, categorie, prijs, datum) VALUES (?, ?, ?, ?)`,
+    [name, category, price, available_date],
+    function (err) {
+      if (err) {
+        console.error(err.message);
+        return res.status(500).send('Fout bij opslaan in database');
+      }
+      console.log(`Nieuw product toegevoegd met ID ${this.lastID}`);
+      res.redirect('/');
+    });
 });
 
 // POST route voor Sign In / Sign Up (optioneel)

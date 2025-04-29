@@ -52,13 +52,22 @@
       </tr>
     </thead>
     <tbody>
-      <tr>
-        <td>1</td>
-        <td>Hamburger</td>
-        <td>Gerecht</td>
-        <td>€5.99</td>
-      </tr>
+      <% if (producten.length > 0) { %>
+        <% producten.forEach(product => { %>
+          <tr>
+            <td><%= product.id %></td>
+            <td><%= product.naam %></td>
+            <td><%= product.categorie %></td>
+            <td>€<%= product.prijs.toFixed(2) %></td>
+          </tr>
+        <% }) %>
+      <% } else { %>
+        <tr>
+          <td colspan="4" class="text-center">Nog geen producten toegevoegd</td>
+        </tr>
+      <% } %>
     </tbody>
+    
   </table>
 </div>
 
