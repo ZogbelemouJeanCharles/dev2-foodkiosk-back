@@ -36,12 +36,12 @@
 <!-- Hoofdinformatie -->
 <div class="container mt-4">
   <h1 class="text-center mb-4">Menu Beheer</h1>
-  
+
   <div class="mb-4">
     <input type="text" class="form-control" placeholder="Zoek menu-items...">
   </div>
 
-  <!-- Voorbeeldtabel -->
+  <!-- Tabel -->
   <table class="table table-dark table-striped">
     <thead class="table-secondary text-dark">
       <tr>
@@ -71,9 +71,8 @@
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <!-- Formulier -->
-        <form id="authForm">
-          <!-- Login velden -->
+        <form id="authForm" method="POST" action="/auth">
+          <!-- Login -->
           <div id="loginFields">
             <div class="mb-3">
               <label for="loginName" class="form-label">Naam</label>
@@ -89,7 +88,7 @@
             </div>
           </div>
 
-          <!-- Signup velden -->
+          <!-- Signup -->
           <div id="signupFields" style="display: none;">
             <div class="mb-3">
               <label for="signupName" class="form-label">Naam</label>
@@ -124,15 +123,14 @@
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <!-- Formulier voor nieuw menu item -->
-        <form id="itemForm">
+        <form id="itemForm" method="POST" action="/menu">
           <div class="mb-3">
             <label for="itemName" class="form-label">Naam</label>
-            <input type="text" class="form-control" id="itemName" placeholder="Bijv. Friet" required>
+            <input type="text" class="form-control" id="itemName" name="name" placeholder="Bijv. Friet" required>
           </div>
           <div class="mb-3">
             <label for="itemCategory" class="form-label">Categorie</label>
-            <select class="form-select" id="itemCategory" required>
+            <select class="form-select" id="itemCategory" name="category" required>
               <option value="Gerecht">Gerecht</option>
               <option value="Drank">Drank</option>
             </select>
@@ -141,10 +139,9 @@
             <label for="itemDate" class="form-label">Datum & Tijd beschikbaar</label>
             <input type="datetime-local" class="form-control" id="itemDate" name="available_date">
           </div>
-          
           <div class="mb-3">
             <label for="itemPrice" class="form-label">Prijs (€)</label>
-            <input type="number" class="form-control" id="itemPrice" placeholder="Prijs" required>
+            <input type="number" class="form-control" id="itemPrice" name="price" placeholder="Prijs" required>
           </div>
           <button type="submit" class="btn btn-primary w-100">Opslaan</button>
         </form>
@@ -153,6 +150,7 @@
   </div>
 </div>
 
+<!-- Bootstrap + JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
@@ -162,12 +160,12 @@
   const loginFields = document.getElementById('loginFields');
   const signupFields = document.getElementById('signupFields');
   const authButton = document.getElementById('authButton');
-  
+
   let isLogin = true;
-  
+
   toggleBtn.addEventListener('click', () => {
     isLogin = !isLogin;
-  
+
     if (isLogin) {
       authTitle.textContent = 'Aanmelden';
       loginFields.style.display = 'block';
@@ -183,33 +181,6 @@
     }
   });
 </script>
-
-<script>
-  document.getElementById('itemForm').addEventListener('submit', function(e) {
-    e.preventDefault(); // Voorkom standaard formulierverzending
-
-    const name = document.getElementById('itemName').value;
-    const category = document.getElementById('itemCategory').value;
-    const price = document.getElementById('itemPrice').value;
-
-    // POST-aanroep naar de server
-    fetch('/menu', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ name, category, price })
-    })
-    .then(response => response.text())
-    .then(data => {
-      alert(data); // Toon het antwoord van de server
-    })
-    .catch(error => {
-      console.error('Er is een fout opgetreden:', error);
-    });
-  });
-</script>
-
 
 </body>
 </html>
