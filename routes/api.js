@@ -21,10 +21,11 @@ router.get('/products', (req, res) => {
 
 // Route 3: POST /api/order
 router.post('/order', (req, res) => {
+  console.log("➡️ POST /api/order werd aangeroepen");
+  console.log('📦 Data ontvangen:', req.body);
+
   const { items, klant } = req.body;
-  console.log('Bestelling ontvangen:', items, klant);
   res.json({ success: true, message: 'Bestelling geplaatst!' });
 });
 
 module.exports = router;
-
