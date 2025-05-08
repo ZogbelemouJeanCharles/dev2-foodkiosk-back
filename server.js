@@ -1,5 +1,7 @@
 const sqlite3 = require('sqlite3').verbose();
 const db = new sqlite3.Database('./fastfood.db');
+const apiRoutes = require('./routes/api');
+app.use('/api', apiRoutes);
 
 // Tabel producten aanmaken als hij nog niet bestaat
 db.serialize(() => {
