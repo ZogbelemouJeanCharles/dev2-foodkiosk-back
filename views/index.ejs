@@ -52,20 +52,28 @@
       </tr>
     </thead>
     <tbody>
-      <% if (producten.length > 0) { %>
-        <% producten.forEach(product => { %>
-          <tr>
-            <td><%= product.id %></td>
-            <td><%= product.naam %></td>
-            <td><%= product.categorie %></td>
-            <td>€<%= product.prijs.toFixed(2) %></td>
-          </tr>
-        <% }) %>
-      <% } else { %>
-        <tr>
-          <td colspan="4" class="text-center">Nog geen producten toegevoegd</td>
-        </tr>
-      <% } %>
+     <% producten.forEach(product => { %>
+  <tr>
+    <td><%= product.id %></td>
+    <td><%= product.naam %></td>
+    <td><%= product.categorie %></td>
+    <td>€<%= product.prijs %></td>
+    <td>
+      <button 
+        class="btn btn-primary btn-sm edit-btn" 
+        data-id="<%= product.id %>" 
+        data-naam="<%= product.naam %>" 
+        data-categorie="<%= product.categorie %>" 
+        data-prijs="<%= product.prijs %>" 
+        data-datum="<%= product.datum %>"
+        data-bs-toggle="modal" 
+        data-bs-target="#menuModal">
+        Bewerken
+      </button>
+    </td>
+  </tr>
+<% }) %>
+
     </tbody>
     
   </table>
