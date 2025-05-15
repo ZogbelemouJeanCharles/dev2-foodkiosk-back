@@ -1,6 +1,9 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const sqlite3 = require('sqlite3').verbose();
+const multer = require('multer');
+const path = require('path');
+
 
 const app = express();
 const port = 3009;
@@ -11,6 +14,21 @@ app.set('views', './views'); // <-- voeg dit toe!
 
 // Database verbinding
 const db = new sqlite3.Database('./fastfood.db');
+
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'public/uploads');
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    const ext = path.extname(file.originalname);
+    cb(null, file.fieldname + '-' + uniqueSuffix + ext);
+  }
+});
+
+const upload = multer({ storage: storage });
+
 
 // Middleware
 app.use(express.static('public'));
@@ -33,11 +51,13 @@ app.get('/', (req, res) => {
   });
 });
 
-app.post('/menu', (req, res) => {
+app.post('/menu', upload.single('image'), (req, res) => {
   const { name, category, price, available_date } = req.body;
+  const imagePath = req.file ? '/uploads/' + req.file.filename : null;
+
   db.run(
-    `INSERT INTO producten (naam, categorie, prijs, datum) VALUES (?, ?, ?, ?)`,
-    [name, category, price, available_date],
+    `INSERT INTO producten (naam, categorie, prijs, datum, afbeelding) VALUES (?, ?, ?, ?, ?)`,
+    [name, category, price, available_date, imagePath],
     function (err) {
       if (err) {
         console.error(err.message);
@@ -49,21 +69,6 @@ app.post('/menu', (req, res) => {
   );
 });
 
-app.post('/menu/edit', (req, res) => {
-  const { id, name, category, price, available_date } = req.body;
-  db.run(
-    `UPDATE producten SET naam = ?, categorie = ?, prijs = ?, datum = ? WHERE id = ?`,
-    [name, category, price, available_date, id],
-    function (err) {
-      if (err) {
-        console.error(err.message);
-        return res.status(500).send('Fout bij bewerken in database');
-      }
-      console.log(`Product met ID ${id} bewerkt.`);
-      res.redirect('/');
-    }
-  );
-});
 
 // Start server
 app.listen(port, () => {

@@ -49,6 +49,8 @@
         <th>Naam</th>
         <th>Categorie</th>
         <th>Prijs</th>
+        <th>Afbeelding</th>
+
       </tr>
     </thead>
     <tbody>
@@ -58,6 +60,14 @@
     <td><%= product.naam %></td>
     <td><%= product.categorie %></td>
     <td>€<%= product.prijs %></td>
+        <td>
+      <% if (product.afbeelding) { %>
+        <img src="<%= product.afbeelding %>" alt="Productafbeelding" style="height: 50px;">
+      <% } else { %>
+        <em>Geen afbeelding</em>
+      <% } %>
+    </td>
+
     <td>
       <button 
         class="btn btn-primary btn-sm edit-btn" 
@@ -141,7 +151,12 @@
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form id="itemForm" method="POST" action="/menu">
+        <form id="itemForm" method="POST" action="/menu" enctype="multipart/form-data">
+          <div class="mb-3">
+          <label for="itemImage" class="form-label">Afbeelding</label>
+          <input type="file" class="form-control" id="itemImage" name="image">
+          </div>
+
           <!-- Verborgen ID veld voor bewerking -->
           <input type="hidden" id="itemId" name="id">
 
