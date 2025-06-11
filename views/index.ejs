@@ -1,255 +1,81 @@
-<!doctype html>
-<html lang="nl">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Fast-food Beheersysteem</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-dark text-light">
-
-<!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
-  <div class="container">
-    <a class="navbar-brand" href="#">FastFood Manager</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarContent">
-      <ul class="navbar-nav me-auto">
-        <li class="nav-item">
-          <a class="nav-link active" href="#">Menu</a>
-        </li>
-      </ul>
-      <div class="d-flex gap-2">
-        <button class="btn btn-light" data-bs-toggle="modal" data-bs-target="#loginModal">
-          Sign In
-        </button>
-        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#menuModal">
-          + Nieuw Item
-        </button>
-      </div>
-    </div>
-  </div>
-</nav>
-
-<!-- Hoofdinformatie -->
 <div class="container mt-4">
   <h1 class="text-center mb-4">Menu Beheer</h1>
 
-  <div class="mb-4">
-    <input type="text" class="form-control" placeholder="Zoek menu-items...">
-  </div>
-
-  <!-- Tabel -->
   <table class="table table-dark table-striped">
-    <thead class="table-secondary text-dark">
+    <thead>
       <tr>
         <th>ID</th>
         <th>Naam</th>
         <th>Categorie</th>
         <th>Prijs</th>
         <th>Afbeelding</th>
-
+        <th>Actie</th>
       </tr>
     </thead>
     <tbody>
-     <% producten.forEach(product => { %>
-  <tr>
-    <td><%= product.id %></td>
-    <td><%= product.naam %></td>
-    <td><%= product.categorie %></td>
-    <td>€<%= product.prijs %></td>
-        <td>
-      <% if (product.afbeelding) { %>
-        <img src="<%= product.afbeelding %>" alt="Productafbeelding" style="height: 50px;">
-      <% } else { %>
-        <em>Geen afbeelding</em>
-      <% } %>
-    </td>
-
-    <td>
-      <button 
-        class="btn btn-primary btn-sm edit-btn" 
-        data-id="<%= product.id %>" 
-        data-naam="<%= product.naam %>" 
-        data-categorie="<%= product.categorie %>" 
-        data-prijs="<%= product.prijs %>" 
-        data-datum="<%= product.datum %>"
-        data-bs-toggle="modal" 
-        data-bs-target="#menuModal">
-        Bewerken
-      </button>
-    </td>
-  </tr>
-<% }) %>
-
+      <% producten.forEach(product => { %>
+        <tr>
+          <td><%= product.id %></td>
+          <td><%= product.naam %></td>
+          <td><%= product.categorie %></td>
+          <td>€<%= product.prijs %></td>
+          <td>
+            <% if (product.afbeelding) { %>
+              <img src="<%= product.afbeelding %>" alt="..." height="50">
+            <% } else { %>
+              <em>Geen afbeelding</em>
+            <% } %>
+          </td>
+          <td>
+            <button 
+              class="btn btn-primary btn-sm edit-btn" 
+              data-id="<%= product.id %>" 
+              data-naam="<%= product.naam %>" 
+              data-categorie="<%= product.categorie %>" 
+              data-prijs="<%= product.prijs %>" 
+              data-datum="<%= product.datum %>"
+              data-bs-toggle="modal" 
+              data-bs-target="#menuModal">
+              Bewerken
+            </button>
+          </td>
+        </tr>
+      <% }) %>
     </tbody>
-    
   </table>
+
+  <!-- ✅ Buiten de tabel plaatsen -->
+ <form method="POST" action="/bestelling">
+  <input type="number" name="totaalbedrag" placeholder="Totaal €" required>
+  <button type="submit">Test Bestelling</button>
+</form>
+
 </div>
 
-<!-- Sign In / Sign Up Modal -->
-<div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content bg-dark text-light">
-      <div class="modal-header">
-        <h5 class="modal-title" id="authTitle">Aanmelden</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form id="authForm" method="POST" action="/auth">
-          <!-- Login -->
-          <div id="loginFields">
-            <div class="mb-3">
-              <label for="loginName" class="form-label">Naam</label>
-              <input type="text" class="form-control" id="loginName" name="name" placeholder="Bijv. Jan Jansen" required>
-            </div>
-            <div class="mb-3">
-              <label for="loginEmail" class="form-label">E-mail</label>
-              <input type="email" class="form-control" id="loginEmail" name="email" placeholder="naam@voorbeeld.com" required>
-            </div>
-            <div class="mb-3">
-              <label for="loginPassword" class="form-label">Wachtwoord</label>
-              <input type="password" class="form-control" id="loginPassword" name="password" placeholder="Voer je wachtwoord in" required>
-            </div>
-          </div>
-
-          <!-- Signup -->
-          <div id="signupFields" style="display: none;">
-            <div class="mb-3">
-              <label for="signupName" class="form-label">Naam</label>
-              <input type="text" class="form-control" id="signupName" name="signup_name" placeholder="Bijv. Sarah Bakker">
-            </div>
-            <div class="mb-3">
-              <label for="signupEmail" class="form-label">E-mail</label>
-              <input type="email" class="form-control" id="signupEmail" name="signup_email" placeholder="naam@voorbeeld.com">
-            </div>
-            <div class="mb-3">
-              <label for="signupPassword" class="form-label">Wachtwoord</label>
-              <input type="password" class="form-control" id="signupPassword" name="signup_password" placeholder="Maak een wachtwoord aan">
-            </div>
-          </div>
-
-          <div class="modal-footer flex-column align-items-stretch">
-            <button type="submit" class="btn btn-primary w-100 mb-2" id="authButton">Aanmelden</button>
-            <button type="button" class="btn btn-link text-light" id="toggleAuth">Nog geen account? Registreer hier.</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Nieuw Item Modal -->
-<!-- Nieuw / Bewerken Item Modal -->
-<div class="modal fade" id="menuModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content bg-dark text-light">
-      <div class="modal-header">
-        <h5 class="modal-title">Nieuw Menu Item</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form id="itemForm" method="POST" action="/menu" enctype="multipart/form-data">
-          <div class="mb-3">
-          <label for="itemImage" class="form-label">Afbeelding</label>
-          <input type="file" class="form-control" id="itemImage" name="image">
-          </div>
-
-          <!-- Verborgen ID veld voor bewerking -->
-          <input type="hidden" id="itemId" name="id">
-
-          <div class="mb-3">
-            <label for="itemName" class="form-label">Naam</label>
-            <input type="text" class="form-control" id="itemName" name="name" placeholder="Bijv. Friet" required>
-          </div>
-          <div class="mb-3">
-            <label for="itemCategory" class="form-label">Categorie</label>
-            <select class="form-select" id="itemCategory" name="category" required>
-              <option value="Gerecht">Gerecht</option>
-              <option value="Drank">Drank</option>
-            </select>
-          </div>
-          <div class="mb-3">
-            <label for="itemDate" class="form-label">Datum & Tijd beschikbaar</label>
-            <input type="datetime-local" class="form-control" id="itemDate" name="available_date">
-          </div>
-          <div class="mb-3">
-            <label for="itemPrice" class="form-label">Prijs (€)</label>
-            <input type="number" class="form-control" id="itemPrice" name="price" placeholder="Prijs" required>
-          </div>
-          <button type="submit" class="btn btn-primary w-100">Opslaan</button>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-
-<!-- Bootstrap + JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
+<!-- JavaScript -->
 <script>
-  // Wisselen tussen login en signup
-  const toggleBtn = document.getElementById('toggleAuth');
-  const authTitle = document.getElementById('authTitle');
-  const loginFields = document.getElementById('loginFields');
-  const signupFields = document.getElementById('signupFields');
-  const authButton = document.getElementById('authButton');
+  // Formulier vullen bij 'Bewerken'
+  document.querySelectorAll('.edit-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.getElementById('itemId').value = btn.dataset.id;
+      document.getElementById('itemName').value = btn.dataset.naam;
+      document.getElementById('itemCategory').value = btn.dataset.categorie;
+      document.getElementById('itemPrice').value = btn.dataset.prijs;
+      document.getElementById('itemDate').value = btn.dataset.datum;
+      document.querySelector('#menuModal .modal-title').textContent = 'Bewerk product';
+    });
+  });
 
-  let isLogin = true;
+  // Formulier resetten bij 'Nieuw item'
+  document.querySelector('[data-bs-target="#menuModal"]').addEventListener('click', () => {
+    document.getElementById('itemForm').reset();
+    document.getElementById('itemId').value = '';
+    document.querySelector('#menuModal .modal-title').textContent = 'Nieuw Menu Item';
+  });
 
-  toggleBtn.addEventListener('click', () => {
-    isLogin = !isLogin;
-
-    if (isLogin) {
-      authTitle.textContent = 'Aanmelden';
-      loginFields.style.display = 'block';
-      signupFields.style.display = 'none';
-      authButton.textContent = 'Aanmelden';
-      toggleBtn.textContent = 'Nog geen account? Registreer hier.';
-    } else {
-      authTitle.textContent = 'Registreren';
-      loginFields.style.display = 'none';
-      signupFields.style.display = 'block';
-      authButton.textContent = 'Registreren';
-      toggleBtn.textContent = 'Heb je al een account? Log hier in.';
-    }
+  // Verzend naar juiste route (nieuw of bewerk)
+  document.getElementById('itemForm').addEventListener('submit', function () {
+    const id = document.getElementById('itemId').value;
+    this.action = id ? '/menu/edit' : '/menu';
   });
 </script>
-
-<script src="bootstrap.bundle.min.js"></script>
-<script>// Bewerken knop vult het formulier met bestaande data
-document.querySelectorAll('.edit-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.getElementById('itemId').value = btn.dataset.id;
-    document.getElementById('itemName').value = btn.dataset.naam;
-    document.getElementById('itemCategory').value = btn.dataset.categorie;
-    document.getElementById('itemPrice').value = btn.dataset.prijs;
-    document.getElementById('itemDate').value = btn.dataset.datum;
-
-    document.querySelector('#menuModal .modal-title').textContent = 'Bewerk product';
-  });
-});
-
-// Reset form bij openen via 'Nieuw Item'
-document.querySelector('[data-bs-target="#menuModal"]').addEventListener('click', () => {
-  document.getElementById('itemForm').reset();
-  document.getElementById('itemId').value = '';
-  document.querySelector('#menuModal .modal-title').textContent = 'Nieuw Menu Item';
-});
-
-// Wijzig de form action afhankelijk van of er een ID is
-document.getElementById('itemForm').addEventListener('submit', function (e) {
-  const id = document.getElementById('itemId').value;
-  this.action = id ? '/menu/edit' : '/menu';
-});
-</script>
-</body>
-
-
-
-</body>
-</html>

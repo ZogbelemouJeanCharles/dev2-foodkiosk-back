@@ -1,0 +1,55 @@
+
+<div class="modal fade" id="menuModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content bg-dark text-light">
+      <div class="modal-header">
+        <h5 class="modal-title">Nieuw Menu Item</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+      
+        <form id="itemForm" method="POST" action="/menu" enctype="multipart/form-data">
+          <div class="mb-3">
+            <label for="itemImage" class="form-label">Afbeelding</label>
+            <input type="file" class="form-control" id="itemImage" name="image">
+          </div>
+
+          <input type="hidden" id="itemId" name="id">
+
+          <div class="mb-3">
+            <label for="itemName" class="form-label">Naam</label>
+            <input type="text" class="form-control" id="itemName" name="name" placeholder="Bijv. Friet" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="itemCategory" class="form-label">Categorie</label>
+            <select class="form-select" id="itemCategory" name="category" required>
+              <option value="Gerecht">Gerecht</option>
+              <option value="Drank">Drank</option>
+              <option value="Dessert">Dessert</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label for="itemDate" class="form-label">Datum & Tijd beschikbaar</label>
+            <input type="datetime-local" class="form-control" id="itemDate" name="available_date">
+          </div>
+
+          <div class="mb-3">
+            <label for="itemPrice" class="form-label">Prijs (€)</label>
+            <input type="number" class="form-control" id="itemPrice" name="price" placeholder="Prijs" required>
+          </div>
+
+          <button type="submit" class="btn btn-primary w-100">Opslaan</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.getElementById('itemForm').addEventListener('submit', function () {
+    const id = document.getElementById('itemId').value;
+    this.action = id ? '/menu/edit' : '/menu';
+  });
+</script>

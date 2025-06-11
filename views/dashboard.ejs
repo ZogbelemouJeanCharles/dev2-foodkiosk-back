@@ -1,0 +1,38 @@
+<div class="container mt-4">
+  <h1 class="mb-4">📊 Dashboard</h1>
+
+  <div class="card mb-4">
+    <div class="card-body">
+      <h5 class="card-title">Aantal bestellingen vandaag</h5>
+      <p class="card-text display-6"><%= vandaag %></p>
+    </div>
+  </div>
+
+  <div class="card mb-4">
+    <div class="card-body">
+      <h5 class="card-title">Aantal bestellingen per maand</h5>
+      <ul class="list-group">
+        <% maandData.forEach(maand => { %>
+          <li class="list-group-item d-flex justify-content-between">
+            <span>Maand: <%= maand.maand %></span>
+            <span><%= maand.aantal %> bestellingen</span>
+          </li>
+        <% }) %>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card mb-4">
+    <div class="card-body">
+      <h5 class="card-title">Omzet per jaar (€)</h5>
+      <ul class="list-group">
+        <% omzetData.forEach(jaar => { %>
+          <li class="list-group-item d-flex justify-content-between">
+            <span>Jaar: <%= jaar.jaar %></span>
+            <span>€<%= jaar.omzet.toFixed(2) %></span>
+          </li>
+        <% }) %>
+      </ul>
+    </div>
+  </div>
+</div>

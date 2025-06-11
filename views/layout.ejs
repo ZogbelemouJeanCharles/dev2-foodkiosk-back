@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <title>Fastfood Beheer</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-dark text-light">
+
+
+
+  
+  <nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
+    <div class="container">
+      <a class="navbar-brand" href="#">FastFood Manager</a>
+      <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#menuModal">+ Nieuw Item</button>
+    </div>
+    <a class="btn btn-outline-light" href="/dashboard">📊 Dashboard</a>
+  </nav>
+
+  
+  <%- body %>
+
+
+  <%- include('partials/menuModal') %>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+<script>
+  // Vul formulier bij bewerken
+  document.querySelectorAll('.edit-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.getElementById('itemId').value = btn.dataset.id;
+      document.getElementById('itemName').value = btn.dataset.naam;
+      document.getElementById('itemCategory').value = btn.dataset.categorie;
+      document.getElementById('itemPrice').value = btn.dataset.prijs;
+      document.getElementById('itemDate').value = btn.dataset.datum;
+      document.querySelector('#menuModal .modal-title').textContent = 'Bewerk product';
+    });
+  });
+
+  // Reset formulier bij nieuw item
+  document.querySelector('[data-bs-target="#menuModal"]').addEventListener('click', () => {
+    document.getElementById('itemForm').reset();
+    document.getElementById('itemId').value = '';
+    document.querySelector('#menuModal .modal-title').textContent = 'Nieuw Menu Item';
+  });
+
+  // 🚨 Formulier stuurt naar juiste route!
+  document.getElementById('itemForm').addEventListener('submit', function (e) {
+    const id = document.getElementById('itemId').value;
+    this.action = id ? '/menu/edit' : '/menu';
+  });
+</script>
+<script>
+  const itemForm = document.getElementById('itemForm');
+  const itemIdInput = document.getElementById('itemId');
+
+  // Bij het openen van de modal:
+  document.getElementById('menuModal').addEventListener('show.bs.modal', function () {
+    const id = itemIdInput.value;
+
+    if (id) {
+      itemForm.action = '/menu/edit'; // Bewerken
+    } else {
+      itemForm.action = '/menu'; // Nieuw
+    }
+  });
+</script>
+
+</html>
