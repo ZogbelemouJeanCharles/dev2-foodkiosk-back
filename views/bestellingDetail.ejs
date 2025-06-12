@@ -4,12 +4,16 @@
   <p><strong>Totaalbedrag:</strong> €<%= bestelling.totaalbedrag %></p>
 
   <h3 class="mt-4">🛍️ Bestelde producten</h3>
-  <ul class="list-group">
-    <% producten.forEach(p => { %>
-      <li class="list-group-item d-flex justify-content-between">
-        <span><%= p.naam %> (x<%= p.aantal %>)</span>
-        <span>€<%= (p.prijs * p.aantal).toFixed(2) %></span>
-      </li>
-    <% }) %>
-  </ul>
+  <% if (producten.length > 0) { %>
+    <ul class="list-group">
+      <% producten.forEach(p => { %>
+        <li class="list-group-item d-flex justify-content-between">
+          <span><%= p.naam %> (x<%= p.aantal %>)</span>
+          <span>€<%= (p.prijs * p.aantal).toFixed(2) %></span>
+        </li>
+      <% }) %>
+    </ul>
+  <% } else { %>
+    <p>❌ Geen producten gevonden voor deze bestelling.</p>
+  <% } %>
 </div>
