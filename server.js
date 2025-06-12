@@ -1,27 +1,52 @@
+require('dotenv').config(); // C'est la première ligne du fichier !
+
 const express = require('express');
-const app = express(); // MOET bovenaan
+const app = express(); // C'est la SEULE et UNIQUE DÉCLARATION de 'app'
+
 const bodyParser = require('body-parser');
 const path = require('path');
 const multer = require('multer');
 const expressLayouts = require('express-ejs-layouts');
 
-//const port = 3009;
+// --- DÉBUT DES MODIFICATIONS POUR POSTGRESQL ---
+const { Pool } = require('pg'); // <-- 1. Importez le module pg
 
-const sqlite3 = require('sqlite3').verbose();
-// Ouvre la base de données en mode lecture seule
-const db = new sqlite3.Database('./fastfood.db', sqlite3.OPEN_READONLY, (err) => {
-    if (err) {
-        // En cas d'erreur, affichez un message pour le débogage dans les logs Vercel
-        console.error('Erreur lors de l\'ouverture de la base de données en mode lecture seule:', err.message);
-        // Vous pouvez décider de faire un process.exit(1) ici pour arrêter l'appli si la DB ne s'ouvre pas du tout
-        // Ou simplement laisser l'appli essayer de continuer si elle n'a pas besoin de la DB immédiatement
-    } else {
-        console.log('Base de données fastfood.db ouverte avec succès en mode lecture seule.');
+// Récupérer l'URL de la base de données depuis les variables d'environnement Vercel
+const connectionString = process.env.DATABASE_URL;
+
+if (!connectionString) {
+    console.error('Erreur: La variable d\'environnement DATABASE_URL n\'est pas définie.');
+    // Pour les tests locaux SANS variable d'environnement, vous pouvez la définir manuellement ici:
+    // REMPLACEZ PAR VOTRE VRAIE CHAÎNE DE CONNEXION SUPABASE
+    // connectionString = 'postgresql://postgres:VOTRE_MOT_DE_PASSE@db.VOTRE_ENDPOINT.supabase.co:5432/postgres';
+    process.exit(1); // Arrête l'application si la DB n'est pas configurée
+}
+
+const pool = new Pool({
+    connectionString: connectionString,
+    ssl: {
+        rejectUnauthorized: false // Très souvent nécessaire pour se connecter à des services cloud comme Supabase
     }
 });
 
+// Test de connexion (optionnel, mais utile pour vérifier que la DB est accessible)
+pool.query('SELECT NOW()', (err, res) => {
+    if (err) {
+        console.error('Erreur de connexion à la base de données PostgreSQL:', err.stack);
+    } else {
+        console.log('Connecté à PostgreSQL ! Heure du serveur DB:', res.rows[0].now);
+    }
+});
 
-const port = process.env.PORT || 3009;
+// Rendre le pool de connexion PostgreSQL disponible pour vos routes
+app.locals.db = pool; // <-- 2. Passez le pool de connexion à vos routes via app.locals
+// --- FIN DES MODIFICATIONS POUR POSTGRESQL ---
+
+// Lignes SQLite - elles sont maintenant inutiles et peuvent être supprimées/restées commentées
+//const sqlite3 = require('sqlite3').verbose();
+//const db = new sqlite3.Database('./fastfood.db');
+
+const port = process.env.PORT || 3009; // Votre ligne est correcte pour Vercel
 
 // Layout
 app.set('view engine', 'ejs');
@@ -44,5 +69,13 @@ app.use('/', menuRoutes);
 
 // Start
 app.listen(port, () => {
-  console.log(`🚀 Server draait op http://localhost:${port}`);
+    console.log(`🚀 Server draait op http://localhost:${port}`);
+});
+
+// Optionnel: Gérer la fermeture propre de la connexion à la DB en cas d'arrêt du serveur
+process.on('SIGINT', async () => {
+    console.log('Fermeture du serveur...');
+    await pool.end(); // Ferme toutes les connexions du pool PostgreSQL
+    console.log('Connexions PostgreSQL fermées.');
+    process.exit(0);
 });
