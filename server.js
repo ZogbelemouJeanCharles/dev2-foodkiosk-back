@@ -5,9 +5,9 @@ const path = require('path');
 const multer = require('multer');
 const expressLayouts = require('express-ejs-layouts');
 const sqlite3 = require('sqlite3').verbose();
-const port = 3009;
+//const port = 3009;
 
-
+const port = process.env.PORT || 3009;
 
 // Layout
 app.set('view engine', 'ejs');
