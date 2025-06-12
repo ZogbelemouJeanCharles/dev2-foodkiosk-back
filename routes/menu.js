@@ -127,6 +127,31 @@ router.get('/dashboard', (req, res) => {
   });
 });
 
+router.get('/bestelling/:id', (req, res) => {
+  const id = req.params.id;
+
+  const bestellingQuery = `SELECT * FROM bestellingen WHERE id = ?`;
+  const productenQuery = `
+    SELECT p.naam, p.prijs, bp.aantal
+    FROM bestelling_producten bp
+    JOIN producten p ON bp.product_id = p.id
+    WHERE bp.bestelling_id = ?
+  `;
+
+  db.get(bestellingQuery, [id], (err, bestelling) => {
+    if (err || !bestelling) return res.status(404).send('Bestelling niet gevonden');
+
+    db.all(productenQuery, [id], (err, producten) => {
+      if (err) return res.status(500).send('Fout bij ophalen producten');
+
+      res.render('bestellingDetail', {
+        bestelling,
+        producten
+      });
+    });
+  });
+});
+
 
 
 module.exports = router;
