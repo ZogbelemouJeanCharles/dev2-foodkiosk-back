@@ -1,81 +1,161 @@
-<div class="container mt-4">
-  <h1 class="text-center mb-4">Menu Beheer</h1>
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Beheer</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/style.css"> 
+</head>
+<body class="bg-dark text-white">
 
-  <table class="table table-dark table-striped">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Naam</th>
-        <th>Categorie</th>
-        <th>Prijs</th>
-        <th>Afbeelding</th>
-        <th>Actie</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% producten.forEach(product => { %>
-        <tr>
-          <td><%= product.id %></td>
-          <td><%= product.naam %></td>
-          <td><%= product.categorie %></td>
-          <td>€<%= product.prijs %></td>
-          <td>
-            <% if (product.afbeelding) { %>
-              <img src="<%= product.afbeelding %>" alt="..." height="50">
-            <% } else { %>
-              <em>Geen afbeelding</em>
-            <% } %>
-          </td>
-          <td>
-            <button 
-              class="btn btn-primary btn-sm edit-btn" 
-              data-id="<%= product.id %>" 
-              data-naam="<%= product.naam %>" 
-              data-categorie="<%= product.categorie %>" 
-              data-prijs="<%= product.prijs %>" 
-              data-datum="<%= product.datum %>"
-              data-bs-toggle="modal" 
-              data-bs-target="#menuModal">
-              Bewerken
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">FastFood Kiosk</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
             </button>
-          </td>
-        </tr>
-      <% }) %>
-    </tbody>
-  </table>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/">Menu</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/dashboard">Dashboard</a>
+                    </li>
+                </ul>
+                <div class="d-flex">
+                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#menuModal" id="addNewItemBtn">Nieuw item</button>
+                </div>
+            </div>
+        </div>
+    </nav>
 
-  <!-- ✅ Buiten de tabel plaatsen -->
- <form method="POST" action="/bestelling">
-  <input type="number" name="totaalbedrag" placeholder="Totaal €" required>
-  <button type="submit">Test Bestelling</button>
-</form>
+    <div class="container mt-4">
+        <h1 class="text-center mb-4">Menu Beheer</h1>
 
-</div>
+        <table class="table table-dark table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Naam</th>
+                    <th>Categorie</th>
+                    <th>Prijs</th>
+                    <th>Datum</th> <th>Afbeelding</th>
+                    <th>Actie</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% producten.forEach(product => { %>
+                    <tr>
+                        <td><%= product.id %></td>
+                        <td><%= product.naam %></td>
+                        <td><%= product.categorie %></td>
+                        <td>€<%= parseFloat(product.prijs).toFixed(2) %></td>
+                        <td><%= product.datum ? new Date(product.datum).toLocaleDateString('nl-NL') : 'N.v.t.' %></td> <td>
+                            <% if (product.afbeelding) { %>
+                                <img src="<%= product.afbeelding %>" alt="<%= product.naam %>" height="50">
+                            <% } else { %>
+                                <em>Geen afbeelding</em>
+                            <% } %>
+                        </td>
+                        <td>
+                            <button 
+                                class="btn btn-primary btn-sm edit-btn" 
+                                data-id="<%= product.id %>" 
+                                data-naam="<%= product.naam %>" 
+                                data-categorie="<%= product.categorie %>" 
+                                data-prijs="<%= product.prijs %>" 
+                                data-datum="<%= product.datum ? new Date(product.datum).toISOString().split('T')[0] : '' %>" data-bs-toggle="modal" 
+                                data-bs-target="#menuModal">
+                                Bewerken
+                            </button>
+                            </td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
 
-<!-- JavaScript -->
-<script>
-  // Formulier vullen bij 'Bewerken'
-  document.querySelectorAll('.edit-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.getElementById('itemId').value = btn.dataset.id;
-      document.getElementById('itemName').value = btn.dataset.naam;
-      document.getElementById('itemCategory').value = btn.dataset.categorie;
-      document.getElementById('itemPrice').value = btn.dataset.prijs;
-      document.getElementById('itemDate').value = btn.dataset.datum;
-      document.querySelector('#menuModal .modal-title').textContent = 'Bewerk product';
-    });
-  });
+        <form method="POST" action="/bestelling" class="mt-5">
+            <input type="number" name="totaalbedrag" placeholder="Totaal €" required class="form-control mb-2">
+            <button type="submit" class="btn btn-info">Test Bestelling</button>
+        </form>
 
-  // Formulier resetten bij 'Nieuw item'
-  document.querySelector('[data-bs-target="#menuModal"]').addEventListener('click', () => {
-    document.getElementById('itemForm').reset();
-    document.getElementById('itemId').value = '';
-    document.querySelector('#menuModal .modal-title').textContent = 'Nieuw Menu Item';
-  });
+    </div>
 
-  // Verzend naar juiste route (nieuw of bewerk)
-  document.getElementById('itemForm').addEventListener('submit', function () {
-    const id = document.getElementById('itemId').value;
-    this.action = id ? '/menu/edit' : '/menu';
-  });
-</script>
+    <div class="modal fade" id="menuModal" tabindex="-1" aria-labelledby="menuModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content bg-dark text-white">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="menuModalLabel">Nieuw Menu Item</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="itemForm" method="POST" action="/menu" enctype="multipart/form-data">
+                        <input type="hidden" name="id" id="itemId"> 
+                        
+                        <div class="mb-3">
+                            <label for="itemName" class="form-label">Naam</label>
+                            <input type="text" class="form-control" id="itemName" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="itemCategory" class="form-label">Categorie</label>
+                            <input type="text" class="form-control" id="itemCategory" name="category">
+                        </div>
+                        <div class="mb-3">
+                            <label for="itemPrice" class="form-label">Prijs</label>
+                            <input type="number" step="0.01" class="form-control" id="itemPrice" name="price" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="itemDate" class="form-label">Datum (YYYY-MM-DD)</label>
+                            <input type="date" class="form-control" id="itemDate" name="available_date">
+                        </div>
+                        <div class="mb-3">
+                            <label for="itemImage" class="form-label">Afbeelding</label>
+                            <input type="file" class="form-control" id="itemImage" name="image">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Sluiten</button>
+                            <button type="submit" class="btn btn-primary">Opslaan</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+    <script>
+        // Formulaire vullen bij 'Bewerken'
+        document.querySelectorAll('.edit-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.getElementById('itemId').value = btn.dataset.id;
+                document.getElementById('itemName').value = btn.dataset.naam;
+                document.getElementById('itemCategory').value = btn.dataset.categorie;
+                document.getElementById('itemPrice').value = btn.dataset.prijs;
+                // Formater la date pour l'input type="date" (YYYY-MM-DD)
+                // Si product.datum est null ou vide, le input date sera vide.
+                document.getElementById('itemDate').value = btn.dataset.datum; 
+                
+                document.querySelector('#menuModal .modal-title').textContent = 'Bewerk product';
+            });
+        });
+
+        // Formulaire resetten bij 'Nieuw item'
+        document.getElementById('addNewItemBtn').addEventListener('click', () => { // Utilise l'ID du bouton "Nieuw item"
+            document.getElementById('itemForm').reset();
+            document.getElementById('itemId').value = ''; // Assure-toi que l'ID est vide pour un nouvel ajout
+            document.querySelector('#menuModal .modal-title').textContent = 'Nieuw Menu Item';
+        });
+
+        // Verzend naar juiste route (nieuw of bewerk)
+        document.getElementById('itemForm').addEventListener('submit', function (event) {
+            const id = document.getElementById('itemId').value;
+            // Si l'ID est présent (non vide), on est en mode édition. Sinon, ajout.
+            this.action = id ? '/menu/edit' : '/menu';
+            // console.log('Form action set to:', this.action); // Pour le débogage
+        });
+    </script>
+</body>
+</html>

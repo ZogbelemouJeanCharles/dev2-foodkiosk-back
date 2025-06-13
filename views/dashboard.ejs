@@ -29,7 +29,7 @@
         <% omzetData.forEach(jaar => { %>
           <li class="list-group-item d-flex justify-content-between">
             <span>Jaar: <%= jaar.jaar %></span>
-            <span>€<%= jaar.omzet.toFixed(2) %></span>
+            <span>€<%= parseFloat(jaar.omzet).toFixed(2) %></span>
           </li>
         <% }) %>
       </ul>

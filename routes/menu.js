@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-// --- Lignes SQLite à supprimer/commenter ---
+// --- Lignes SQLite à supprimer/commenter - PLUS BESOIN ! ---
 // const sqlite3 = require('sqlite3').verbose();
 // const db = new sqlite3.Database('./fastfood.db');
 // --- FIN Lignes SQLite ---
@@ -28,10 +28,10 @@ router.use((req, res, next) => {
 });
 
 // GET homepage
-router.get('/', async (req, res) => { // Ajout de 'async'
+router.get('/', async (req, res) => {
     try {
-        const result = await req.dbPool.query('SELECT * FROM producten'); // Utilisation de req.dbPool.query
-        res.render('index', { producten: result.rows }); // Les résultats sont dans result.rows
+        const result = await req.dbPool.query('SELECT * FROM producten');
+        res.render('index', { producten: result.rows });
     } catch (err) {
         console.error('Erreur lors de la récupération des produits pour la page d\'accueil:', err.message);
         res.status(500).send('Database fout');
@@ -39,17 +39,24 @@ router.get('/', async (req, res) => { // Ajout de 'async'
 });
 
 // POST nieuw item
-router.post('/menu', upload.single('image'), async (req, res) => { // Ajout de 'async'
+// POST nieuw item
+router.post('/menu', upload.single('image'), async (req, res) => {
     const { name, category, price, available_date } = req.body;
-    const imagePath = req.file ? '/uploads/' + req.file.filename : null;
+    // --- MODIFICATION TRÈS IMPORTANTE ICI ---
+    // Si pas de fichier, imagePath sera une chaîne vide, pas null
+    const imagePath = req.file ? '/uploads/' + req.file.filename : ''; 
+    // --- FIN DE LA MODIFICATION ---
+
+    // Si available_date est vide, utilise la date d'aujourd'hui (format ISO pour PostgreSQL)
+    const formattedDate = available_date ? available_date : new Date().toISOString(); 
 
     try {
-        // Attention: PostgreSQL utilise $1, $2, etc. pour les paramètres
-        const query = `INSERT INTO producten (naam, categorie, prijs, datum, afbeelding) VALUES ($1, $2, $3, $4, $5) RETURNING id`;
-        const params = [name, category, price, available_date, imagePath];
+        const query = `INSERT INTO producten (naam, categorie, prijs, datum, afbeelding) VALUES ($1, $2, $3, ($4)::timestamp, $5) RETURNING id`; // Added ::timestamp cast for extra safety
+        // Utilise formattedDate et imagePath
+        const params = [name, category, price, formattedDate, imagePath]; 
 
         const result = await req.dbPool.query(query, params);
-        const newProductId = result.rows[0].id; // Récupère l'ID du produit inséré
+        const newProductId = result.rows[0].id;
         console.log(`✅ Nieuw product toegevoegd met ID ${newProductId}`);
         res.redirect('/');
     } catch (err) {
@@ -59,19 +66,28 @@ router.post('/menu', upload.single('image'), async (req, res) => { // Ajout de '
 });
 
 // POST update item
-router.post('/menu/edit', upload.single('image'), async (req, res) => { // Ajout de 'async'
+// POST update item
+router.post('/menu/edit', upload.single('image'), async (req, res) => {
     const { id, name, category, price, available_date } = req.body;
-    const imagePath = req.file ? '/uploads/' + req.file.filename : null;
+
+    // --- MODIFICATION ICI pour l'image ---
+    // Si pas de fichier, imagePath sera une chaîne vide, pas null
+    const imagePath = req.file ? '/uploads/' + req.file.filename : '';
+    // --- FIN MODIFICATION ---
+    console.log(`🔍 ID reçu pour l'édition : ${id}`);
+    // (La ligne pour la date est déjà corrigée)
+    const formattedDate = available_date ? available_date : new Date().toISOString();
 
     let query;
     let params;
 
-    if (imagePath) {
+    if (imagePath) { // Si une NOUVELLE image a été uploadée
         query = `UPDATE producten SET naam = $1, categorie = $2, prijs = $3, datum = $4, afbeelding = $5 WHERE id = $6`;
-        params = [name, category, price, available_date, imagePath, id];
-    } else {
-        query = `UPDATE producten SET naam = $1, categorie = $2, prijs = $3, datum = $4 WHERE id = $5`;
-        params = [name, category, price, available_date, id];
+        params = [name, category, price, formattedDate, imagePath, id];
+    } else { // Si aucune nouvelle image n'a été uploadée
+       
+        query = `UPDATE producten SET naam = $1, categorie = $2, prijs = $3, datum = $4, afbeelding = $5 WHERE id = $6`;
+        params = [name, category, price, formattedDate, imagePath, id]; // imagePath sera '' ici
     }
 
     try {
@@ -85,27 +101,23 @@ router.post('/menu/edit', upload.single('image'), async (req, res) => { // Ajout
 });
 
 // POST nouvelle bestelling
-router.post('/bestelling', async (req, res) => { // Ajout de 'async'
-    const { totaalbedrag, gebruiker_id, items } = req.body; // J'ai ajouté gebruiker_id et items, car une bestelling complète inclut ces éléments.
+router.post('/bestelling', async (req, res) => {
+    const { totaalbedrag, gebruiker_id, items } = req.body;
 
     if (!totaalbedrag) {
         return res.status(400).send('Totaalbedrag ontbreekt');
     }
 
-    // Assurez-vous d'avoir un gebruiker_id valide ou gérez le cas où il n'y en a pas.
-    // Pour cet exemple, je suppose que c'est soit fourni, soit une valeur par défaut.
-    const currentGebruikerId = gebruiker_id || 1; // Exemple: utilisez un ID par défaut si non fourni
-    const besteldatum = new Date().toISOString();
-    const status = 'pending'; // Définissez un statut par défaut
+    const currentGebruikerId = gebruiker_id || 1;
+    const besteldatum = new Date().toISOString(); // Variable JavaScript, c'est OK
 
     try {
-        // Insertion de la bestelling
-        const insertBestellingQuery = `INSERT INTO bestellingen (gebruiker_id, besteldatum, status, totaalbedrag) VALUES ($1, $2, $3, $4) RETURNING id`;
-        const bestellingResult = await req.dbPool.query(insertBestellingQuery, [currentGebruikerId, besteldatum, status, totaalbedrag]);
+        // CORRECTION MAJEURE ICI : 'besteldatum' -> 'datum' dans la requête SQL
+        const insertBestellingQuery = `INSERT INTO bestellingen (gebruiker_id, datum, status, totaalbedrag) VALUES ($1, $2, $3, $4) RETURNING id`;
+        const bestellingResult = await req.dbPool.query(insertBestellingQuery, [currentGebruikerId, besteldatum, 'pending', totaalbedrag]);
         const bestellingId = bestellingResult.rows[0].id;
         console.log(`✅ Bestelling opgeslagen met ID ${bestellingId}`);
 
-        // Si vous avez des items dans la commande, insérez-les dans bestelling_producten
         if (items && Array.isArray(items) && items.length > 0) {
             for (const item of items) {
                 const insertBestellingProductenQuery = `INSERT INTO bestelling_producten (bestelling_id, product_id, aantal) VALUES ($1, $2, $3)`;
@@ -121,23 +133,15 @@ router.post('/bestelling', async (req, res) => { // Ajout de 'async'
     }
 });
 
-
 // GET dashboard
-router.get('/dashboard', async (req, res) => { // Ajout de 'async'
+router.get('/dashboard', async (req, res) => {
     const today = new Date().toISOString().split('T')[0]; // Format 'YYYY-MM-DD'
 
-    // Requêtes SQL pour PostgreSQL.
-    // Les fonctions de date/heure changent de SQLite à PostgreSQL.
-    // DATE(datum) en SQLite devient DATE(datum) ou `date_trunc('day', datum)` en Postgres.
-    // strftime('%m', datum) devient EXTRACT(MONTH FROM datum) ou TO_CHAR(datum, 'MM').
-    // strftime('%Y', datum) devient EXTRACT(YEAR FROM datum) ou TO_CHAR(datum, 'YYYY').
-
-    // Pour `DATE(datum) = ?` -> `datum::date = $1` ou `CAST(datum AS DATE) = $1`
+    // CORRECTION MAJEURE ICI : Toutes les références à 'besteldatum' sont remplacées par 'datum'
+    // et les fonctions de date sont adaptées à PostgreSQL.
     const queryVandaag = `SELECT COUNT(*) AS aantal FROM bestellingen WHERE datum::date = $1`;
-    // Pour `strftime('%m', datum) AS maand` -> `EXTRACT(MONTH FROM besteldatum) AS maand`
-    const queryMaand = `SELECT EXTRACT(MONTH FROM besteldatum) AS maand, COUNT(*) AS aantal FROM bestellingen GROUP BY EXTRACT(MONTH FROM besteldatum) ORDER BY maand`;
-    // Pour `strftime('%Y', datum) AS jaar` -> `EXTRACT(YEAR FROM besteldatum) AS jaar`
-    const queryOmzet = `SELECT EXTRACT(YEAR FROM besteldatum) AS jaar, SUM(totaalbedrag) AS omzet FROM bestellingen GROUP BY EXTRACT(YEAR FROM besteldatum) ORDER BY jaar`;
+    const queryMaand = `SELECT TO_CHAR(datum, 'MM') AS maand, COUNT(*) AS aantal FROM bestellingen GROUP BY TO_CHAR(datum, 'MM') ORDER BY maand`;
+    const queryOmzet = `SELECT TO_CHAR(datum, 'YYYY') AS jaar, SUM(totaalbedrag) AS omzet FROM bestellingen GROUP BY TO_CHAR(datum, 'YYYY') ORDER BY jaar`;
 
     try {
         const resultVandaag = await req.dbPool.query(queryVandaag, [today]);
@@ -150,13 +154,13 @@ router.get('/dashboard', async (req, res) => { // Ajout de 'async'
             omzetData: resultatenOmzet.rows,
         });
     } catch (err) {
-        console.error('❌ Fout bij ophalen dashboard data:', err.message);
-        res.status(500).send('Fout bij dashboard data');
+        console.error('❌ Fout bij ophalen dashboard data (PostgreSQL):', err.message);
+        res.status(500).send(`Fout bij ophalen dashboard data: ${err.message}`);
     }
 });
 
 // GET bestelling detail
-router.get('/bestelling/:id', async (req, res) => { // Ajout de 'async'
+router.get('/bestelling/:id', async (req, res) => {
     const id = req.params.id;
 
     const bestellingQuery = `SELECT * FROM bestellingen WHERE id = $1`;
@@ -187,6 +191,5 @@ router.get('/bestelling/:id', async (req, res) => { // Ajout de 'async'
         res.status(500).send('Fout bij ophalen bestelling details');
     }
 });
-
 
 module.exports = router;
