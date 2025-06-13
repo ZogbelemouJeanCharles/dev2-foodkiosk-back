@@ -50,7 +50,7 @@ const port = process.env.PORT || 3009; // Votre ligne est correcte pour Vercel
 
 // Layout
 app.set('view engine', 'ejs');
-app.set('views', './views');
+app.set('views', path.join(__dirname, 'views'));
 app.use(expressLayouts);
 app.set('layout', 'layout');
 
